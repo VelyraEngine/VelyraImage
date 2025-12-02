@@ -26,7 +26,7 @@ namespace Velyra::Image {
         else {
             m_Format = loadedFormat;
             m_Data.resize(m_Width * m_Height * channelCount);
-            memcpy(m_Data.data(), pData, m_Width * m_Height * channelCount);
+            memcpy(m_Data.data(), pData, m_Width * m_Height * channelCount * sizeof(float));
         }
         stbi_image_free(pData);
 
@@ -37,7 +37,7 @@ namespace Velyra::Image {
     IImage(desc.width, desc.height, VL_FLOAT32, desc.format),
     m_Data(desc.width * desc.height * getChannelCountFromFormat(desc.format), 1.0f) {
         if (desc.data != nullptr) {
-            memcpy(m_Data.data(), desc.data, desc.width * desc.height * getChannelCountFromFormat(desc.format));
+            memcpy(m_Data.data(), desc.data, desc.width * desc.height * getChannelCountFromFormat(desc.format) * sizeof(float));
         }
         SPDLOG_LOGGER_INFO(m_Logger, "Created ImageF32 with size ({}x{}) and format {}", m_Width, m_Height, m_Format);
     }
