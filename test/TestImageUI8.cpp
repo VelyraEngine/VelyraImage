@@ -6,7 +6,6 @@
 using namespace Velyra;
 using namespace Velyra::Image;
 
-
 class TestImageUI8 : public ::testing::Test {
 protected:
 
@@ -138,7 +137,7 @@ TEST_F(TestImageUI8, ResizeImage) {
     constexpr U32 newWidth = 60;
     constexpr U32 newHeight = 60;
     const UP<IImage> resizedImagePtr = image.resize(newWidth, newHeight);
-    auto resizedImage = dynamic_cast<ImageUI8*>(resizedImagePtr.get());
+    const auto resizedImage = dynamic_cast<ImageUI8*>(resizedImagePtr.get());
 
     ASSERT_NE(resizedImage, nullptr);
     EXPECT_EQ(resizedImage->getWidth(), newWidth);

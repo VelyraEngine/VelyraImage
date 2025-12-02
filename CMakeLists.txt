@@ -16,6 +16,7 @@ set(VELYRA_IMAGE_HEADERS
     src/LoggerNames.hpp
     src/ImageUtils.hpp
     src/ImageUI8.hpp
+    src/ImageF32.hpp
 )
 
 set(VELYRA_IMAGE_SRC
@@ -24,6 +25,7 @@ set(VELYRA_IMAGE_SRC
     src/ImageDefs.cpp
     src/ImageUtils.cpp
     src/ImageUI8.cpp
+    src/ImageF32.cpp
 )
 
 set(STB_IMAGE_SRC
@@ -47,6 +49,7 @@ set(VELYRA_IMAGE_TEST_SRC
     test/TestImageDefs.cpp
     test/TestImageFactory.cpp
     test/TestImageUI8.cpp
+    test/TestImageF32.cpp
 )
 
 if (BUILD_TESTING)
