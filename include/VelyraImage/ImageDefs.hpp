@@ -23,6 +23,11 @@ VL_ENUM(VL_CHANNEL_FORMAT, int,
     VL_CHANNEL_BGRA     = 0x06
 );
 
+VL_ENUM(VL_FORMAT_CONVERSION_FILL, int,
+    VL_FILL_MIN = 0x00,
+    VL_FILL_MAX = 0x01
+    );
+
 namespace Velyra::Image {
 
     namespace fs = std::filesystem;
@@ -80,6 +85,17 @@ namespace Velyra::Image {
         U32 height                   = 0;
         VL_CHANNEL_FORMAT format     = VL_CHANNEL_RGBA;
         float defaultChannelValue     = 1.0f; // In case an empty image is requested, fill buffer with this value
+    };
+
+    struct VL_API FormatConversionDesc {
+        VL_CHANNEL_FORMAT targetFormat;
+        /*
+         * In case of up-conversion, fill new channels with max or min value
+         * For UI8, these values are 0 and 255
+         * For UI16, these values are 0 and 65535
+         * For F32, these values are 0.0f and 1.0f
+         */
+        VL_FORMAT_CONVERSION_FILL fillMode = VL_FILL_MAX;
     };
 
 }

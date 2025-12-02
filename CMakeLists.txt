@@ -17,6 +17,8 @@ set(VELYRA_IMAGE_HEADERS
     src/ImageUtils.hpp
     src/ImageUI8.hpp
     src/ImageF32.hpp
+
+    src/FormatConversion/FormatConversion.hpp
 )
 
 set(VELYRA_IMAGE_SRC
@@ -26,6 +28,8 @@ set(VELYRA_IMAGE_SRC
     src/ImageUtils.cpp
     src/ImageUI8.cpp
     src/ImageF32.cpp
+
+    src/FormatConversion/FormatConversion.cpp
 )
 
 set(STB_IMAGE_SRC
@@ -50,6 +54,7 @@ set(VELYRA_IMAGE_TEST_SRC
     test/TestImageFactory.cpp
     test/TestImageUI8.cpp
     test/TestImageF32.cpp
+    test/FormatConversion/TestFormatConversion.cpp
 )
 
 if (BUILD_TESTING)
