@@ -15,6 +15,8 @@ namespace Velyra::Image {
 
         virtual void* getData() = 0;
 
+        virtual UP<IImage> convertToFormat(const FormatConversionDesc& desc) const = 0;
+
         U32 getWidth() const { return m_Width; }
 
         U32 getHeight() const { return m_Height; }

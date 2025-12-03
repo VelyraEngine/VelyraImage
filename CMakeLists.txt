@@ -55,6 +55,7 @@ set(VELYRA_IMAGE_TEST_SRC
     test/TestImageUI8.cpp
     test/TestImageF32.cpp
     test/FormatConversion/TestFormatConversion.cpp
+    test/FormatConversion/ImageConfig.hpp
 )
 
 if (BUILD_TESTING)

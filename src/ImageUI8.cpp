@@ -2,6 +2,7 @@
 
 #include "ImageUI8.hpp"
 #include "ImageUtils.hpp"
+#include "FormatConversion/FormatConversion.hpp"
 
 namespace Velyra::Image {
 
@@ -100,5 +101,14 @@ namespace Velyra::Image {
         return m_Data.data();
     }
 
-
+    UP<IImage> ImageUI8::convertToFormat(const FormatConversionDesc &desc) const {
+        ImageUI8Desc targetDesc;
+        targetDesc.width = m_Width;
+        targetDesc.height = m_Height;
+        targetDesc.format = desc.targetFormat;
+        targetDesc.data = nullptr;
+        auto targetImage = createUP<ImageUI8>(targetDesc);
+        convertFormat<U8>(m_Format, m_Data, desc.targetFormat, targetImage->m_Data, desc.fillMode);
+        return targetImage;
+    }
 }

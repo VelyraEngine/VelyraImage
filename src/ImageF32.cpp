@@ -2,6 +2,7 @@
 
 #include "ImageF32.hpp"
 #include "ImageUtils.hpp"
+#include "FormatConversion/FormatConversion.hpp"
 
 namespace Velyra::Image {
 
@@ -87,4 +88,14 @@ namespace Velyra::Image {
         return m_Data.data();
     }
 
+    UP<IImage> ImageF32::convertToFormat(const FormatConversionDesc &desc) const {
+        ImageF32Desc targetDesc;
+        targetDesc.width = m_Width;
+        targetDesc.height = m_Height;
+        targetDesc.format = desc.targetFormat;
+        targetDesc.data = nullptr;
+        auto targetImage = createUP<ImageF32>(targetDesc);
+        convertFormat<float>(m_Format, m_Data, desc.targetFormat, targetImage->m_Data, desc.fillMode);
+        return targetImage;
+    }
 }

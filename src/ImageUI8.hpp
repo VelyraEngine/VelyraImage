@@ -21,6 +21,8 @@ namespace Velyra::Image {
 
         void* getData() override;
 
+        UP<IImage> convertToFormat(const FormatConversionDesc& desc) const override;
+
     private:
         std::vector<U8> m_Data;
         Utils::LogPtr m_Logger = Utils::getLogger(LOGGER_UI8);
