@@ -64,7 +64,7 @@ protected:
     }
 };
 
-using TestTypes = ::testing::Types<ImageConfig<ImageUI8>, ImageConfig<ImageF32>>;
+using TestTypes = ::testing::Types<ImageConfig<ImageUI8, VL_SIMD_SCALAR>, ImageConfig<ImageF32, VL_SIMD_SCALAR>, ImageConfig<ImageUI8, VL_SIMD_AVX2>>;
 TYPED_TEST_SUITE(TestFormatConversion, TestTypes);
 
 TYPED_TEST(TestFormatConversion, DefineSwizzle) {
@@ -107,6 +107,7 @@ TYPED_TEST(TestFormatConversion, RGB_2_RGBA) {
     FormatConversionDesc desc;
     desc.fillMode = VL_FILL_MAX;
     desc.targetFormat = VL_CHANNEL_RGBA;
+    desc.simdMode = VL_SIMD_SCALAR;
     auto targetImage = sourceImage.convertToFormat(desc);
     EXPECT_EQ(targetImage->getWidth(), sourceImage.getWidth());
     EXPECT_EQ(targetImage->getHeight(), sourceImage.getHeight());
@@ -128,6 +129,7 @@ TYPED_TEST(TestFormatConversion, RGBA_2_BGRA) {
     FormatConversionDesc desc;
     desc.fillMode = VL_FILL_MAX;
     desc.targetFormat = VL_CHANNEL_BGRA;
+    desc.simdMode = VL_SIMD_SCALAR;
     auto targetImage = sourceImage.convertToFormat(desc);
     EXPECT_EQ(targetImage->getWidth(), sourceImage.getWidth());
     EXPECT_EQ(targetImage->getHeight(), sourceImage.getHeight());
@@ -149,6 +151,7 @@ TYPED_TEST(TestFormatConversion, BGRA_2_RGB) {
     FormatConversionDesc desc;
     desc.fillMode = VL_FILL_MAX;
     desc.targetFormat = VL_CHANNEL_RGB;
+    desc.simdMode = VL_SIMD_SCALAR;
     auto targetImage = sourceImage.convertToFormat(desc);
     EXPECT_EQ(targetImage->getWidth(), sourceImage.getWidth());
     EXPECT_EQ(targetImage->getHeight(), sourceImage.getHeight());
@@ -169,6 +172,7 @@ TYPED_TEST(TestFormatConversion, R_2_BGRA) {
     FormatConversionDesc desc;
     desc.fillMode = VL_FILL_MIN;
     desc.targetFormat = VL_CHANNEL_BGRA;
+    desc.simdMode = VL_SIMD_SCALAR;
     auto targetImage = sourceImage.convertToFormat(desc);
     EXPECT_EQ(targetImage->getWidth(), sourceImage.getWidth());
     EXPECT_EQ(targetImage->getHeight(), sourceImage.getHeight());

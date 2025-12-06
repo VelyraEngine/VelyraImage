@@ -108,7 +108,7 @@ namespace Velyra::Image {
         targetDesc.format = desc.targetFormat;
         targetDesc.data = nullptr;
         auto targetImage = createUP<ImageUI8>(targetDesc);
-        convertFormat<U8>(m_Format, m_Data, desc.targetFormat, targetImage->m_Data, desc.fillMode);
+        convertFormat<U8>(m_Format, m_Data, targetImage->m_Data, desc);
         return targetImage;
     }
 }

@@ -1,10 +1,14 @@
 #pragma once
 
 #include <VelyraImage/ImageDefs.hpp>
+#include <VelyraUtils/CpuFeatures.hpp>
 
 namespace Velyra::Image {
 
     std::vector<int> defineSwizzle(VL_CHANNEL_FORMAT sourceFormat, VL_CHANNEL_FORMAT targetFormat);
+
+    void convertFormat_U8_AVX2(VL_CHANNEL_FORMAT sourceFormat, const std::vector<U8>& sourceData,
+        VL_CHANNEL_FORMAT targetFormat, std::vector<U8>& targetData, VL_FORMAT_CONVERSION_FILL fillMode);
 
     template<typename T>
     T getFillValue(const VL_FORMAT_CONVERSION_FILL fillMode) {
@@ -25,7 +29,7 @@ namespace Velyra::Image {
     }
 
     template<typename T>
-    void convertFormat(const VL_CHANNEL_FORMAT sourceFormat, const std::vector<T>& sourceData,
+    void convertFormat_Scalar(const VL_CHANNEL_FORMAT sourceFormat, const std::vector<T>& sourceData,
         const VL_CHANNEL_FORMAT targetFormat, std::vector<T>& targetData, const VL_FORMAT_CONVERSION_FILL fillMode) {
 
         const std::vector<int> swizzle = defineSwizzle(sourceFormat, targetFormat);
@@ -44,5 +48,20 @@ namespace Velyra::Image {
                 }
             }
         }
+    }
+
+    template<typename T>
+    void convertFormat(const VL_CHANNEL_FORMAT sourceFormat, const std::vector<T>& sourceData,
+        std::vector<T>& targetData, const FormatConversionDesc& desc) {
+
+        // Dispatch based on CPU features and data type
+        static Utils::CpuFeatures cpuFeatures = Utils::detectCpuFeatures();
+        if constexpr (std::is_same_v<T, U8>) {
+            if (cpuFeatures.avx2 && desc.simdMode == VL_SIMD_AVX2) {
+                convertFormat_U8_AVX2(sourceFormat, sourceData, desc.targetFormat, targetData, desc.fillMode);
+                return;
+            }
+        }
+        convertFormat_Scalar<T>(sourceFormat, sourceData, desc.targetFormat, targetData, desc.fillMode);
     }
 }

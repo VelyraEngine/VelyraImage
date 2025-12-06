@@ -69,3 +69,6 @@ if (BUILD_TESTING)
     set_tests_properties(CTestVelyraImage PROPERTIES
         WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 endif ()
+
+add_executable(VelyraImageMain main.cpp)
+target_link_libraries(VelyraImageMain PUBLIC VelyraImage)

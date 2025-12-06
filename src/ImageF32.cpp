@@ -95,7 +95,7 @@ namespace Velyra::Image {
         targetDesc.format = desc.targetFormat;
         targetDesc.data = nullptr;
         auto targetImage = createUP<ImageF32>(targetDesc);
-        convertFormat<float>(m_Format, m_Data, desc.targetFormat, targetImage->m_Data, desc.fillMode);
+        convertFormat<float>(m_Format, m_Data, targetImage->m_Data, desc);
         return targetImage;
     }
 }

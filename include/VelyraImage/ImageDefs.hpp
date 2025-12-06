@@ -26,7 +26,14 @@ VL_ENUM(VL_CHANNEL_FORMAT, int,
 VL_ENUM(VL_FORMAT_CONVERSION_FILL, int,
     VL_FILL_MIN = 0x00,
     VL_FILL_MAX = 0x01
-    );
+);
+
+VL_ENUM(VL_SIMD_MODE, int,
+    VL_SIMD_BEST    = 0x00,
+    VL_SIMD_SCALAR  = 0x01,
+    VL_SIMD_AVX2    = 0x02
+    // Extend later with SSE2
+);
 
 namespace Velyra::Image {
 
@@ -57,10 +64,6 @@ namespace Velyra::Image {
         fs::path fileName;
         bool flipOnWrite        = false;
         VL_IMAGE_TYPE fileType  = VL_IMAGE_PNG;
-    };
-
-    struct VL_API ConvertToF32Desc {
-        bool decodeSRGB       = true;   // If true, convert from sRGB to linear color space (for HDR calculations)
     };
 
     struct VL_API ImageUI8Desc {
@@ -96,6 +99,7 @@ namespace Velyra::Image {
          * For F32, these values are 0.0f and 1.0f
          */
         VL_FORMAT_CONVERSION_FILL fillMode = VL_FILL_MAX;
+        VL_SIMD_MODE simdMode = VL_SIMD_BEST; // SIMD mode to use for conversion
     };
 
 }
