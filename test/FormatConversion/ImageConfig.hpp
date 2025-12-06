@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../src/ImageUI8.hpp"
+#include "../../src/ImageU8.hpp"
 #include "../../src/ImageF32.hpp"
 
 using namespace Velyra;
@@ -10,10 +10,10 @@ template<typename IMAGE_TYPE, VL_SIMD_MODE simdMode>
 struct ImageConfig;
 
 template<>
-struct ImageConfig<ImageUI8, VL_SIMD_SCALAR> {
+struct ImageConfig<ImageU8, VL_SIMD_SCALAR> {
     using PixelType = U8;
-    using ImageType = ImageUI8;
-    using ImageDesc = ImageUI8Desc;
+    using ImageType = ImageU8;
+    using ImageDesc = ImageU8Desc;
     static constexpr PixelType r = 10;
     static constexpr PixelType g = 20;
     static constexpr PixelType b = 30;
@@ -28,10 +28,10 @@ struct ImageConfig<ImageUI8, VL_SIMD_SCALAR> {
 };
 
 template<>
-struct ImageConfig<ImageUI8, VL_SIMD_AVX2> {
+struct ImageConfig<ImageU8, VL_SIMD_AVX2> {
     using PixelType = U8;
-    using ImageType = ImageUI8;
-    using ImageDesc = ImageUI8Desc;
+    using ImageType = ImageU8;
+    using ImageDesc = ImageU8Desc;
     static constexpr PixelType r = 10;
     static constexpr PixelType g = 20;
     static constexpr PixelType b = 30;

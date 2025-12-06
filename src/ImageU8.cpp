@@ -1,12 +1,12 @@
 #include "Pch.hpp"
 
-#include "ImageUI8.hpp"
+#include "ImageU8.hpp"
 #include "ImageUtils.hpp"
 #include "FormatConversion/FormatConversion.hpp"
 
 namespace Velyra::Image {
 
-    ImageUI8::ImageUI8(const ImageLoadDesc &desc):
+    ImageU8::ImageU8(const ImageLoadDesc &desc):
     IImage(VL_UINT8){
         stbi_set_flip_vertically_on_load(desc.flipOnLoad);
         I32 channelCount = 0;
@@ -34,7 +34,7 @@ namespace Velyra::Image {
         SPDLOG_LOGGER_INFO(m_Logger, "Loaded ImageUI8: {} with size ({}x{}) and format {}", desc.fileName.string(), m_Width, m_Height, m_Format);
     }
 
-    ImageUI8::ImageUI8(const ImageUI8Desc &desc):
+    ImageU8::ImageU8(const ImageU8Desc &desc):
     IImage(desc.width, desc.height, VL_UINT8, desc.format),
     m_Data(desc.width * desc.height * getChannelCountFromFormat(desc.format), 255) {
         if (desc.data != nullptr) {
@@ -43,7 +43,7 @@ namespace Velyra::Image {
         SPDLOG_LOGGER_INFO(m_Logger, "Created ImageUI8 with size ({}x{}) and format {}", m_Width, m_Height, m_Format);
     }
 
-    void ImageUI8::write(const ImageWriteDesc &desc) {
+    void ImageU8::write(const ImageWriteDesc &desc) {
         stbi_flip_vertically_on_write(desc.flipOnWrite);
         const auto width = static_cast<I32>(m_Width);
         const auto height = static_cast<I32>(m_Height);
@@ -69,25 +69,25 @@ namespace Velyra::Image {
         }
     }
 
-    UP<IImage> ImageUI8::resize(const U32 width, const U32 height) {
+    UP<IImage> ImageU8::resize(const U32 width, const U32 height) {
         if (width == 0 || height == 0) {
             SPDLOG_LOGGER_WARN(m_Logger, "Image cannot be resized to ({}x{})", width, height);
 
             // Simply return a copy of the current image
-            ImageUI8Desc desc;
+            ImageU8Desc desc;
             desc.width = m_Width;
             desc.height = m_Height;
             desc.format = m_Format;
             desc.data = m_Data.data();
-            return createUP<ImageUI8>(desc);
+            return createUP<ImageU8>(desc);
         }
 
-        ImageUI8Desc desc;
+        ImageU8Desc desc;
         desc.width = width;
         desc.height = height;
         desc.format = m_Format;
         desc.data = nullptr;
-        auto resizedImage = createUP<ImageUI8>(desc);
+        auto resizedImage = createUP<ImageU8>(desc);
         if (!stbir_resize_uint8_linear(
                 m_Data.data(), static_cast<I32>(m_Width), static_cast<I32>(m_Height), 0,
                 static_cast<unsigned char *>(resizedImage->getData()), static_cast<I32>(width), static_cast<I32>(height), 0,
@@ -97,17 +97,17 @@ namespace Velyra::Image {
         return resizedImage;
     }
 
-    void* ImageUI8::getData() {
+    void* ImageU8::getData() {
         return m_Data.data();
     }
 
-    UP<IImage> ImageUI8::convertToFormat(const FormatConversionDesc &desc) const {
-        ImageUI8Desc targetDesc;
+    UP<IImage> ImageU8::convertToFormat(const FormatConversionDesc &desc) const {
+        ImageU8Desc targetDesc;
         targetDesc.width = m_Width;
         targetDesc.height = m_Height;
         targetDesc.format = desc.targetFormat;
         targetDesc.data = nullptr;
-        auto targetImage = createUP<ImageUI8>(targetDesc);
+        auto targetImage = createUP<ImageU8>(targetDesc);
         convertFormat<U8>(m_Format, m_Data, targetImage->m_Data, desc);
         return targetImage;
     }

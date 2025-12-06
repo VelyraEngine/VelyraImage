@@ -8,9 +8,7 @@ namespace Velyra::Image {
     public:
         static UP<IImage> createImage(const ImageLoadDesc& desc);
 
-        static UP<IImage> createImageUI8(const ImageUI8Desc& desc);
-
-        static UP<IImage> createImageUI16(const ImageUI16Desc& desc);
+        static UP<IImage> createImageU8(const ImageU8Desc& desc);
 
         static UP<IImage> createImageF32(const ImageF32Desc& desc);
     };

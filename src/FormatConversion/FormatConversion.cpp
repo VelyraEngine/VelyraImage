@@ -139,13 +139,12 @@ namespace Velyra::Image {
         }
 
         // Scalar tail (handles remaining pixels)
+        const std::vector<int> swz = defineSwizzle(sourceFormat, targetFormat);
         for (; i < pixelCount; ++i) {
             const Size sOff = i * srcStride;
             const Size dOff = i * dstStride;
             for (U32 c = 0; c < dstStride; ++c) {
                 int srcChannel = -1;
-                // get swizzle once per function would be better, but keep simple:
-                std::vector<int> swz = defineSwizzle(sourceFormat, targetFormat);
                 srcChannel = swz[c];
                 if (srcChannel < 0) {
                     targetData[dOff + c] = fillValue;

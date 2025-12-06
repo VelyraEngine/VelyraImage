@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <VelyraImage/ImageDefs.hpp>
 
-#include "../src/ImageUI8.hpp"
+#include "../src/ImageU8.hpp"
 
 using namespace Velyra;
 using namespace Velyra::Image;
@@ -9,7 +9,7 @@ using namespace Velyra::Image;
 class TestImageUI8 : public ::testing::Test {
 protected:
 
-    void checkRedImage(ImageUI8& image) {
+    void checkRedImage(ImageU8& image) {
         auto pixelPtr = static_cast<U8*>(image.getData());
         for (Size i = 0; i < image.getPixelCount(); i += 3) {
             EXPECT_EQ(pixelPtr[i], 255);     // R
@@ -27,7 +27,7 @@ TEST_F(TestImageUI8, ReadImageFromFile) {
     ImageLoadDesc desc;
     desc.fileName = testImagePath;
     desc.flipOnLoad = true;
-    ImageUI8 image(desc);
+    ImageU8 image(desc);
     EXPECT_EQ(image.getWidth(), 100);
     EXPECT_EQ(image.getHeight(), 100);
     EXPECT_EQ(image.getChannelFormat(), VL_CHANNEL_RGB);
@@ -51,13 +51,13 @@ TEST_F(TestImageUI8, CreateImageFromData) {
         imageData[i + 2] = 0;   // B
     }
 
-    ImageUI8Desc desc;
+    ImageU8Desc desc;
     desc.width = width;
     desc.height = height;
     desc.format = VL_CHANNEL_RGB;
     desc.data = imageData.data();
 
-    ImageUI8 image(desc);
+    ImageU8 image(desc);
     EXPECT_EQ(image.getWidth(), width);
     EXPECT_EQ(image.getHeight(), height);
     EXPECT_EQ(image.getChannelFormat(), VL_CHANNEL_RGB);
@@ -81,13 +81,13 @@ TEST_F(TestImageUI8, WriteImageToFile) {
         imageData[i + 2] = 0;   // B
     }
 
-    ImageUI8Desc desc;
+    ImageU8Desc desc;
     desc.width = width;
     desc.height = height;
     desc.format = VL_CHANNEL_RGB;
     desc.data = imageData.data();
 
-    ImageUI8 image(desc);
+    ImageU8 image(desc);
 
     const fs::path outputImagePath = fs::current_path() / "TestImageUI8-WriteImageToFile-Red-20x20-UI8-RGB.png";
     ImageWriteDesc writeDesc;
@@ -102,7 +102,7 @@ TEST_F(TestImageUI8, WriteImageToFile) {
     loadDesc.fileName = outputImagePath;
     loadDesc.flipOnLoad = true;
 
-    ImageUI8 loadedImage(loadDesc);
+    ImageU8 loadedImage(loadDesc);
     EXPECT_EQ(loadedImage.getWidth(), width);
     EXPECT_EQ(loadedImage.getHeight(), height);
     EXPECT_EQ(loadedImage.getChannelFormat(), VL_CHANNEL_RGB);
@@ -126,18 +126,18 @@ TEST_F(TestImageUI8, ResizeImage) {
         imageData[i + 2] = 0;   // B
     }
 
-    ImageUI8Desc desc;
+    ImageU8Desc desc;
     desc.width = originalWidth;
     desc.height = originalHeight;
     desc.format = VL_CHANNEL_RGB;
     desc.data = imageData.data();
 
-    ImageUI8 image(desc);
+    ImageU8 image(desc);
 
     constexpr U32 newWidth = 60;
     constexpr U32 newHeight = 60;
     const UP<IImage> resizedImagePtr = image.resize(newWidth, newHeight);
-    const auto resizedImage = dynamic_cast<ImageUI8*>(resizedImagePtr.get());
+    const auto resizedImage = dynamic_cast<ImageU8*>(resizedImagePtr.get());
 
     ASSERT_NE(resizedImage, nullptr);
     EXPECT_EQ(resizedImage->getWidth(), newWidth);

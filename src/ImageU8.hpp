@@ -7,13 +7,13 @@
 
 namespace Velyra::Image {
 
-    class ImageUI8: public IImage {
+    class ImageU8: public IImage {
     public:
-        explicit ImageUI8(const ImageLoadDesc& desc);
+        explicit ImageU8(const ImageLoadDesc& desc);
 
-        explicit ImageUI8(const ImageUI8Desc& desc);
+        explicit ImageU8(const ImageU8Desc& desc);
 
-        ~ImageUI8() override = default;
+        ~ImageU8() override = default;
 
         void write(const ImageWriteDesc& desc) override;
 

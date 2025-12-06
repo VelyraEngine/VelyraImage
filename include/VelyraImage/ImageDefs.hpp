@@ -66,7 +66,7 @@ namespace Velyra::Image {
         VL_IMAGE_TYPE fileType  = VL_IMAGE_PNG;
     };
 
-    struct VL_API ImageUI8Desc {
+    struct VL_API ImageU8Desc {
         const U8* data               = nullptr;
         U32 width                    = 0;
         U32 height                   = 0;

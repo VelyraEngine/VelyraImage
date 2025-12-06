@@ -64,7 +64,7 @@ protected:
     }
 };
 
-using TestTypes = ::testing::Types<ImageConfig<ImageUI8, VL_SIMD_SCALAR>, ImageConfig<ImageF32, VL_SIMD_SCALAR>, ImageConfig<ImageUI8, VL_SIMD_AVX2>>;
+using TestTypes = ::testing::Types<ImageConfig<ImageU8, VL_SIMD_SCALAR>, ImageConfig<ImageF32, VL_SIMD_SCALAR>, ImageConfig<ImageU8, VL_SIMD_AVX2>>;
 TYPED_TEST_SUITE(TestFormatConversion, TestTypes);
 
 TYPED_TEST(TestFormatConversion, DefineSwizzle) {

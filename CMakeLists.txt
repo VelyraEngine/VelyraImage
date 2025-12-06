@@ -15,7 +15,7 @@ set(VELYRA_IMAGE_HEADERS
 
     src/LoggerNames.hpp
     src/ImageUtils.hpp
-    src/ImageUI8.hpp
+    src/ImageU8.hpp
     src/ImageF32.hpp
 
     src/FormatConversion/FormatConversion.hpp
@@ -26,7 +26,7 @@ set(VELYRA_IMAGE_SRC
     src/ImageFactory.cpp
     src/ImageDefs.cpp
     src/ImageUtils.cpp
-    src/ImageUI8.cpp
+    src/ImageU8.cpp
     src/ImageF32.cpp
 
     src/FormatConversion/FormatConversion.cpp
