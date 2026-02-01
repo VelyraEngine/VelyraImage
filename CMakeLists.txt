@@ -49,6 +49,11 @@ target_include_directories(VelyraImage PUBLIC include)
 target_link_libraries(VelyraImage PRIVATE stb_image)
 target_link_libraries(VelyraImage PUBLIC VelyraUtils)
 
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    # Enable SIMD features
+    target_compile_options(VelyraImage PRIVATE -march=native)
+endif ()
+
 set(VELYRA_IMAGE_TEST_SRC
     test/TestImageDefs.cpp
     test/TestImageFactory.cpp
@@ -68,6 +73,11 @@ if (BUILD_TESTING)
     add_test(NAME CTestVelyraImage COMMAND ${PROOT} $<TARGET_FILE:TestVelyraImage>)
     set_tests_properties(CTestVelyraImage PROPERTIES
         WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        # Enable SIMD features
+        target_compile_options(TestVelyraImage PRIVATE -march=native)
+    endif ()
 endif ()
 
 add_executable(VelyraImageMain main.cpp)
