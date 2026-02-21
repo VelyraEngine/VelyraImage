@@ -4,7 +4,7 @@ project(VelyraImage DESCRIPTION "Velyra Image library")
 include(VelyraBuildUtils/VelyraBuildUtils.cmake)
 
 set(VELYRA_UTILS_PATH)
-include_or_fetch(VelyraUtils VELYRA_UTILS_PATH)
+vl_include_or_fetch(VelyraUtils VELYRA_UTILS_PATH)
 message(STATUS "VelyraUtils found at ${VELYRA_UTILS_PATH}")
 
 set(VELYRA_IMAGE_HEADERS
@@ -43,7 +43,7 @@ target_include_directories(stb_image PUBLIC src/stb_image)
 set_target_properties(stb_image PROPERTIES LINKER_LANGUAGE C)
 
 add_library(VelyraImage STATIC ${VELYRA_IMAGE_HEADERS} ${VELYRA_IMAGE_SRC})
-velyra_target_set_compile_flags(VelyraImage)
+vl_target_set_compile_flags(VelyraImage)
 target_precompile_headers(VelyraImage PRIVATE src/Pch.hpp)
 target_include_directories(VelyraImage PUBLIC include)
 target_link_libraries(VelyraImage PRIVATE stb_image)
@@ -64,7 +64,7 @@ set(VELYRA_IMAGE_TEST_SRC
 )
 
 if (BUILD_TESTING)
-    fetch_gtest()
+    vl_fetch_gtest()
 
     add_executable(TestVelyraImage ${VELYRA_IMAGE_HEADERS} ${VELYRA_IMAGE_SRC} ${VELYRA_IMAGE_TEST_SRC})
     target_include_directories(TestVelyraImage PUBLIC include)
