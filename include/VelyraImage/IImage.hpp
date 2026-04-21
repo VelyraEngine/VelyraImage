@@ -11,15 +11,15 @@ namespace Velyra::Image {
 
         virtual void write(const ImageWriteDesc& desc) = 0;
 
-        virtual UP<IImage> resize(U32 width, U32 height) = 0;
+        virtual UP<IImage> resize(Size width, Size height) = 0;
 
         virtual void* getData() = 0;
 
         virtual UP<IImage> convertToFormat(const FormatConversionDesc& desc) const = 0;
 
-        U32 getWidth() const { return m_Width; }
+        Size getWidth() const { return m_Width; }
 
-        U32 getHeight() const { return m_Height; }
+        Size getHeight() const { return m_Height; }
 
         VL_CHANNEL_FORMAT getChannelFormat() const { return m_Format; }
 
@@ -49,10 +49,10 @@ namespace Velyra::Image {
         IImage(U32 width, U32 height, VL_TYPE type, VL_CHANNEL_FORMAT format);
 
     protected:
-        U32 m_Width = 0;
-        U32 m_Height = 0;
+        Size m_Width = 0;
+        Size m_Height = 0;
         const VL_TYPE m_DataType = VL_TYPE_NONE;
-        VL_CHANNEL_FORMAT m_Format = VL_CHANNEL_UNKNOWN;
+        VL_CHANNEL_FORMAT m_Format = VL_CHANNEL_FORMAT_MAX_VALUE;
 
     };
 

@@ -33,26 +33,26 @@ namespace Velyra::Image {
     }
 
     __m256i buildSwizzleMask_U8_AVX2(const VL_CHANNEL_FORMAT sourceFormat, const VL_CHANNEL_FORMAT targetFormat) {
-        std::array<U8, 32> mask;
+        std::array<U8, 32> mask{};
         const std::vector<int> swizzle = defineSwizzle(sourceFormat, targetFormat);
         const U32 sourceChannelCount = getChannelCountFromFormat(sourceFormat);
         const U32 targetChannelCount = getChannelCountFromFormat(targetFormat);
 
-        const int pixelsPerLane = 16 / targetChannelCount;
+        const Size pixelsPerLane = 16 / targetChannelCount;
 
-        for (int lane = 0; lane < 2; ++lane) {
-            for (int p = 0; p < pixelsPerLane; ++p) {
-                const int pixelBase = lane * 16 + p * targetChannelCount;
+        for (Size lane = 0; lane < 2; ++lane) {
+            for (Size p = 0; p < pixelsPerLane; ++p) {
+                const Size pixelBase = lane * 16 + p * targetChannelCount;
 
                 for (int c = 0; c < targetChannelCount; ++c) {
-                    const int outIndex = pixelBase + c;
+                    const Size outIndex = pixelBase + c;
 
-                    int srcChannel = swizzle[c];
+                    Size srcChannel = swizzle[c];
                     if (srcChannel < 0) {
                         // Fill: mark 0x80
                         mask[outIndex] = 0x80;
                     } else {
-                        int srcByte = p * sourceChannelCount + srcChannel;
+                        Size srcByte = p * sourceChannelCount + srcChannel;
 
                         // Limit to lane (0–15 or 16–31)
                         mask[outIndex] = static_cast<uint8_t>(srcByte);
@@ -67,13 +67,13 @@ namespace Velyra::Image {
         std::array<uint8_t, 32> mask{};
         const std::vector<int> swizzle = defineSwizzle(sourceFormat, targetFormat);
         const U32 targetChannelCount = getChannelCountFromFormat(targetFormat);
-        const int pixelsPerLane = 16 / targetChannelCount;
+        const Size pixelsPerLane = 16 / targetChannelCount;
 
-        for (int lane = 0; lane < 2; ++lane) {
-            for (int p = 0; p < pixelsPerLane; ++p) {
-                const int pixelBase = lane * 16 + p * targetChannelCount;
-                for (int c = 0; c < (int)targetChannelCount; ++c) {
-                    const int outIndex = pixelBase + c;
+        for (Size lane = 0; lane < 2; ++lane) {
+            for (Size p = 0; p < pixelsPerLane; ++p) {
+                const Size pixelBase = lane * 16 + p * targetChannelCount;
+                for (Size c = 0; c < targetChannelCount; ++c) {
+                    const Size outIndex = pixelBase + c;
                     if (swizzle[c] < 0) {
                         // this output byte should be filled -> set mask to 0xFF (blend select)
                         mask[outIndex] = 0xFF;
@@ -96,7 +96,7 @@ namespace Velyra::Image {
         const U8 fillValue = getFillValue<U8>(fillMode);
 
         // pixels processed per 256-bit vector (32 bytes)
-        const int pixelsPerVec = 32 / dstStride;
+        const Size pixelsPerVec = 32 / dstStride;
         if (pixelsPerVec <= 0) {
             // defensive: divide by zero protection
             // fallback to scalar

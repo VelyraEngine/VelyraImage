@@ -20,7 +20,7 @@ namespace Velyra::Image {
             case 2: return VL_CHANNEL_RG;
             case 3: return VL_CHANNEL_RGB;
             case 4: return VL_CHANNEL_RGBA;
-            default: return VL_CHANNEL_UNKNOWN;
+            default: return VL_CHANNEL_FORMAT_MAX_VALUE;
         }
     }
 

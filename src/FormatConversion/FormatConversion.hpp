@@ -2,6 +2,7 @@
 
 #include <VelyraImage/ImageDefs.hpp>
 #include <VelyraUtils/CpuFeatures.hpp>
+#include <VelyraUtils/TypeTraits.hpp>
 
 namespace Velyra::Image {
 
@@ -25,6 +26,10 @@ namespace Velyra::Image {
                 case VL_FILL_MAX: return std::numeric_limits<T>::max();
                 default: return std::numeric_limits<T>::max();
             }
+        }
+        else {
+            static_assert(Utils::always_false<T>::value, "Unsupported type for fill value");
+            return 0; // This line will never be reached, but is needed to satisfy the compiler
         }
     }
 

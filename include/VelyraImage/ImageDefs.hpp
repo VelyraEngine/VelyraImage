@@ -6,7 +6,6 @@
 #include <filesystem>
 
 VL_ENUM(VL_IMAGE_TYPE, int,
-    VL_IMAGE_NONE      = 0x00,
     VL_IMAGE_PNG       = 0x01,
     VL_IMAGE_JPG       = 0x02,
     VL_IMAGE_BMP       = 0x03,
@@ -14,7 +13,6 @@ VL_ENUM(VL_IMAGE_TYPE, int,
 );
 
 VL_ENUM(VL_CHANNEL_FORMAT, U8,
-    VL_CHANNEL_UNKNOWN  = 0x00,
     VL_CHANNEL_R        = 0x01,
     VL_CHANNEL_RG       = 0x02,
     VL_CHANNEL_RGB      = 0x03,
@@ -57,7 +55,7 @@ namespace Velyra::Image {
     struct VL_API ImageLoadDesc {
         fs::path fileName;
         bool flipOnLoad         = true;
-        VL_CHANNEL_FORMAT requestedFormat = VL_CHANNEL_UNKNOWN; // If UNKNOWN, load all channels available in the image
+        VL_CHANNEL_FORMAT requestedFormat = VL_CHANNEL_FORMAT_MAX_VALUE; // If UNKNOWN, load all channels available in the image
     };
 
     struct VL_API ImageWriteDesc {
@@ -67,31 +65,31 @@ namespace Velyra::Image {
     };
 
     struct VL_API ImageU8Desc {
-        const U8* data               = nullptr;
-        U32 width                    = 0;
-        U32 height                   = 0;
-        VL_CHANNEL_FORMAT format     = VL_CHANNEL_RGBA;
+        const U8* data              = nullptr;
+        Size width                  = 0;
+        Size height                 = 0;
+        VL_CHANNEL_FORMAT format    = VL_CHANNEL_RGBA;
         U8 defaultChannelValue      = 255; // In case an empty image is requested, fill buffer with this value
     };
 
     struct VL_API ImageUI16Desc {
-        const U16* data              = nullptr;
-        U32 width                    = 0;
-        U32 height                   = 0;
-        VL_CHANNEL_FORMAT format     = VL_CHANNEL_RGBA;
+        const U16* data             = nullptr;
+        Size width                  = 0;
+        Size height                 = 0;
+        VL_CHANNEL_FORMAT format    = VL_CHANNEL_RGBA;
         U16 defaultChannelValue     = 65535; // In case an empty image is requested, fill buffer with this value
     };
 
     struct VL_API ImageF32Desc {
-        const float* data              = nullptr;
-        U32 width                    = 0;
-        U32 height                   = 0;
-        VL_CHANNEL_FORMAT format     = VL_CHANNEL_RGBA;
-        float defaultChannelValue     = 1.0f; // In case an empty image is requested, fill buffer with this value
+        const float* data           = nullptr;
+        Size width                  = 0;
+        Size height                 = 0;
+        VL_CHANNEL_FORMAT format    = VL_CHANNEL_RGBA;
+        float defaultChannelValue   = 1.0f; // In case an empty image is requested, fill buffer with this value
     };
 
     struct VL_API FormatConversionDesc {
-        VL_CHANNEL_FORMAT targetFormat;
+        VL_CHANNEL_FORMAT targetFormat = VL_CHANNEL_FORMAT_MAX_VALUE;
         /*
          * In case of up-conversion, fill new channels with max or min value
          * For UI8, these values are 0 and 255

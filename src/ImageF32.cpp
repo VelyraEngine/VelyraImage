@@ -21,7 +21,7 @@ namespace Velyra::Image {
         m_Height = static_cast<U32>(height);
 
         const VL_CHANNEL_FORMAT loadedFormat = getChannelFormatFromCount(channelCount);
-        if (loadedFormat != desc.requestedFormat && desc.requestedFormat != VL_CHANNEL_UNKNOWN) {
+        if (loadedFormat != desc.requestedFormat && desc.requestedFormat != VL_CHANNEL_FORMAT_MAX_VALUE) {
             SPDLOG_LOGGER_INFO(m_Logger, "Image: {} loaded with {} channels, converting to requested format {}", desc.fileName.string(), channelCount, desc.requestedFormat);
         }
         else {
@@ -57,7 +57,7 @@ namespace Velyra::Image {
         }
     }
 
-    UP<IImage> ImageF32::resize(U32 width, U32 height) {
+    UP<IImage> ImageF32::resize(Size width, Size height) {
         if (width == 0 || height == 0) {
             SPDLOG_LOGGER_WARN(m_Logger, "Image cannot be resized to ({}x{})", width, height);
 
