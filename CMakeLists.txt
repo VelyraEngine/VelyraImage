@@ -43,7 +43,7 @@ target_include_directories(stb_image PUBLIC src/stb_image)
 set_target_properties(stb_image PROPERTIES LINKER_LANGUAGE C)
 
 add_library(VelyraImage STATIC ${VELYRA_IMAGE_HEADERS} ${VELYRA_IMAGE_SRC})
-vl_target_set_compile_flags(VelyraImage)
+vl_configure_target(VelyraImage)
 target_precompile_headers(VelyraImage PRIVATE src/Pch.hpp)
 target_include_directories(VelyraImage PUBLIC include)
 target_link_libraries(VelyraImage PRIVATE stb_image)
@@ -70,9 +70,7 @@ if (BUILD_TESTING)
     target_include_directories(TestVelyraImage PUBLIC include)
     target_precompile_headers(TestVelyraImage PRIVATE src/Pch.hpp)
     target_link_libraries(TestVelyraImage PUBLIC GTest::gtest GTest::gtest_main stb_image VelyraUtils)
-    add_test(NAME CTestVelyraImage COMMAND ${PROOT} $<TARGET_FILE:TestVelyraImage>)
-    set_tests_properties(CTestVelyraImage PROPERTIES
-        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+    vl_configure_test_target(TestVelyraImage)
 
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         # Enable SIMD features
@@ -82,3 +80,4 @@ endif ()
 
 add_executable(VelyraImageMain main.cpp)
 target_link_libraries(VelyraImageMain PUBLIC VelyraImage)
+vl_configure_target(VelyraImageMain)
