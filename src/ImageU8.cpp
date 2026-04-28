@@ -3,6 +3,8 @@
 #include "ImageU8.hpp"
 #include "ImageUtils.hpp"
 #include "FormatConversion/FormatConversion.hpp"
+#include "DataTypeConversion/DataTypeConversion.hpp"
+#include "ImageF32.hpp"
 
 namespace Velyra::Image {
 
@@ -111,4 +113,39 @@ namespace Velyra::Image {
         convertFormat<U8>(m_Format, m_Data, targetImage->m_Data, desc);
         return targetImage;
     }
+
+    UP<IImage> ImageU8::translateDataType(const TranslationDesc &desc) const {
+        switch (desc.targetType) {
+            case VL_UINT8: {
+                // Same type, return a copy
+                ImageU8Desc targetDesc;
+                targetDesc.width = m_Width;
+                targetDesc.height = m_Height;
+                targetDesc.format = m_Format;
+                targetDesc.data = m_Data.data();
+                return createUP<ImageU8>(targetDesc);
+            }
+            case VL_FLOAT32: {
+                ImageF32Desc targetDesc;
+                targetDesc.width = m_Width;
+                targetDesc.height = m_Height;
+                targetDesc.format = m_Format;
+                targetDesc.data = nullptr;
+                auto targetImage = createUP<ImageF32>(targetDesc);
+
+                // Get direct access to the target data
+                std::vector<float>& targetData = targetImage->m_Data;
+                TranslateDataType::translateDataType<U8, float>(m_Data, targetData, desc);
+
+                SPDLOG_LOGGER_INFO(m_Logger, "Translated ImageU8 to ImageF32 with size ({}x{}) and format {}",
+                    m_Width, m_Height, m_Format);
+                return targetImage;
+            }
+            default: {
+                SPDLOG_LOGGER_ERROR(m_Logger, "Unsupported target type for translation from U8: {}", desc.targetType);
+                return nullptr;
+            }
+        }
+    }
 }
+

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <VelyraUtils/Types/Types.hpp>
+#include <VelyraUtils/Types/SymbolicTypes.hpp>
 #include <VelyraUtils/ExportUtils.hpp>
 #include <VelyraUtils/VelyraEnum.hpp>
 #include <filesystem>
@@ -98,6 +99,11 @@ namespace Velyra::Image {
          */
         VL_FORMAT_CONVERSION_FILL fillMode = VL_FILL_MAX;
         VL_SIMD_MODE simdMode = VL_SIMD_BEST; // SIMD mode to use for conversion
+    };
+
+    struct VL_API TranslationDesc {
+        VL_TYPE targetType = VL_TYPE_MAX_VALUE;
+        VL_SIMD_MODE simdMode = VL_SIMD_BEST; // SIMD mode to use for translation
     };
 
 }

@@ -26,4 +26,16 @@ namespace Velyra::Image {
         return createUP<ImageF32>(desc);
     }
 
+    UP<IImage> ImageFactory::translateImageDataType(const IImage& source, const TranslationDesc& desc) {
+        Utils::LogPtr logger = Utils::getLogger(LOGGER_BASE);
+        
+        auto result = source.translateDataType(desc);
+        if (!result) {
+            SPDLOG_LOGGER_ERROR(logger, "Failed to translate image from type {} to type {}", 
+                source.getDataType(), desc.targetType);
+        }
+        
+        return result;
+    }
+
 }

@@ -7,6 +7,8 @@
 
 namespace Velyra::Image {
 
+    class ImageU8; // Forward declaration
+
     class ImageF32: public IImage {
     public:
         explicit ImageF32(const ImageLoadDesc& desc);
@@ -23,7 +25,11 @@ namespace Velyra::Image {
 
         UP<IImage> convertToFormat(const FormatConversionDesc& desc) const override;
 
+        UP<IImage> translateDataType(const TranslationDesc& desc) const override;
+
     private:
+        friend class ImageU8; // Allow ImageU8 to access m_Data
+        
         std::vector<float> m_Data;
         Utils::LogPtr m_Logger = Utils::getLogger(LOGGER_F32);
     };
