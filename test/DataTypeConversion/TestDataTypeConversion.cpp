@@ -3,23 +3,34 @@
 #include <VelyraImage/ImageFactory.hpp>
 #include <VelyraUtils/Math.hpp>
 #include <VelyraUtils/TypeTraits.hpp>
+#include <VelyraUtils/DevUtils/PrettyTypeFormatter.hpp>
+
+#include "../TypeUtils.hpp"
 
 using namespace Velyra;
 using namespace Velyra::Image;
+using namespace Velyra::Test;
 
-template<typename T, VL_SIMD_MODE M, VL_TYPE TargetType>
-struct ConversionCase {
-    using SourceType = T;
-    static constexpr VL_SIMD_MODE SimdMode = M;
-    static constexpr VL_TYPE TargetDataType = TargetType;
+template<VL_TYPE TargetType>
+struct TargetTypeWrapper {
+    static constexpr VL_TYPE Type = TargetType;
 };
 
-template<typename ConversionCase>
+using TargetDataTypes = Utils::TypeList<
+    TargetTypeWrapper<VL_UINT8>,
+    TargetTypeWrapper<VL_FLOAT32>
+>;
+
+// Calculate cartesian product of ImageDataTypes, SimdModes, and TargetDataTypes
+using Combinations = Utils::CartesianProduct<ImageDataTypes, SimdModes, TargetDataTypes>;
+using ConversionCases = Utils::ToGTestTypes<Combinations::type>::type;
+
+template<typename Case>
 class TestDataTypeConversion : public ::testing::Test {
 public:
-    using SourceType = ConversionCase::SourceType;
-    static constexpr VL_SIMD_MODE SimdMode = ConversionCase::SimdMode;
-    static constexpr VL_TYPE TargetDataType = ConversionCase::TargetDataType;
+    using SourceType = std::tuple_element_t<0, Case>;
+    static constexpr VL_SIMD_MODE SimdMode = std::tuple_element_t<1, Case>::SimdMode;
+    static constexpr VL_TYPE TargetDataType = std::tuple_element_t<2, Case>::Type;
     static constexpr Size m_Width = 200;
     static constexpr Size m_Height = 200;
 
@@ -76,17 +87,6 @@ public:
         }
     }
 };
-
-using ConversionCases = ::testing::Types<
-    ConversionCase<float, VL_SIMD_SCALAR, VL_UINT8>,
-    ConversionCase<float, VL_SIMD_SCALAR, VL_FLOAT32>,
-    ConversionCase<float, VL_SIMD_AVX2, VL_UINT8>,
-    ConversionCase<float, VL_SIMD_AVX2, VL_UINT8>,
-    ConversionCase<U8, VL_SIMD_SCALAR, VL_UINT8>,
-    ConversionCase<U8, VL_SIMD_SCALAR, VL_FLOAT32>,
-    ConversionCase<U8, VL_SIMD_AVX2, VL_UINT8>,
-    ConversionCase<U8, VL_SIMD_AVX2, VL_UINT8>
->;
 
 TYPED_TEST_SUITE(TestDataTypeConversion, ConversionCases);
 

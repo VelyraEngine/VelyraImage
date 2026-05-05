@@ -57,6 +57,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif ()
 
 set(VELYRA_IMAGE_TEST_SRC
+    test/TypeUtils.hpp
+
     test/TestImageDefs.cpp
     test/TestImageFactory.cpp
     test/TestImageUI8.cpp
