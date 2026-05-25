@@ -69,13 +69,11 @@ set(VELYRA_IMAGE_TEST_SRC
     test/DataTypeConversion/TestDataTypeConversion.cpp
 )
 
-if (BUILD_TESTING)
-    vl_fetch_gtest()
-
+if (VL_BUILD_TESTING)
     add_executable(TestVelyraImage ${VELYRA_IMAGE_HEADERS} ${VELYRA_IMAGE_SRC} ${VELYRA_IMAGE_TEST_SRC})
     target_include_directories(TestVelyraImage PUBLIC include)
     target_precompile_headers(TestVelyraImage PRIVATE src/Pch.hpp)
-    target_link_libraries(TestVelyraImage PUBLIC GTest::gtest GTest::gtest_main stb_image VelyraUtils)
+    target_link_libraries(TestVelyraImage PUBLIC stb_image VelyraUtils)
     vl_configure_test_target(TestVelyraImage)
 
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
