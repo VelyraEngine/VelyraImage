@@ -68,7 +68,7 @@ namespace Velyra::Image {
     protected:
         explicit IImage(VL_TYPE type);
 
-        IImage(U32 width, U32 height, VL_TYPE type, VL_CHANNEL_FORMAT format);
+        IImage(Size width, Size height, VL_TYPE type, VL_CHANNEL_FORMAT format);
 
     protected:
         Size m_Width = 0;

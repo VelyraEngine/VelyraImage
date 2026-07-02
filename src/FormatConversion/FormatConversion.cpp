@@ -44,7 +44,7 @@ namespace Velyra::Image {
             for (Size p = 0; p < pixelsPerLane; ++p) {
                 const Size pixelBase = lane * 16 + p * targetChannelCount;
 
-                for (int c = 0; c < targetChannelCount; ++c) {
+                for (U32 c = 0; c < targetChannelCount; ++c) {
                     const Size outIndex = pixelBase + c;
 
                     Size srcChannel = swizzle[c];

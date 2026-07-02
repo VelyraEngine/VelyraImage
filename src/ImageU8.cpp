@@ -22,14 +22,14 @@ namespace Velyra::Image {
         m_Width = static_cast<U32>(width);
         m_Height = static_cast<U32>(height);
 
-        const VL_CHANNEL_FORMAT loadedFormat = getChannelFormatFromCount(channelCount);
+        const VL_CHANNEL_FORMAT loadedFormat = getChannelFormatFromCount(static_cast<U32>(channelCount));
         if (loadedFormat != desc.requestedFormat && desc.requestedFormat != VL_CHANNEL_FORMAT_MAX_VALUE) {
             SPDLOG_LOGGER_INFO(m_Logger, "Image: {} loaded with {} channels, converting to requested format {}", desc.fileName.string(), channelCount, desc.requestedFormat);
         }
         else {
             m_Format = loadedFormat;
-            m_Data.resize(m_Width * m_Height * channelCount);
-            memcpy(m_Data.data(), pData, m_Width * m_Height * channelCount);
+            m_Data.resize(m_Width * m_Height * static_cast<U32>(channelCount));
+            memcpy(m_Data.data(), pData, m_Width * m_Height * static_cast<U32>(channelCount));
         }
         stbi_image_free(pData);
 
@@ -49,7 +49,7 @@ namespace Velyra::Image {
         stbi_flip_vertically_on_write(desc.flipOnWrite);
         const auto width = static_cast<I32>(m_Width);
         const auto height = static_cast<I32>(m_Height);
-        const I32 channelCount = getChannelCountFromFormat(m_Format);
+        const I32 channelCount = static_cast<I32>(getChannelCountFromFormat(m_Format));
 
         switch (desc.fileType) {
             case VL_IMAGE_PNG: {

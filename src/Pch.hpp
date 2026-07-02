@@ -10,3 +10,5 @@
 #include <immintrin.h>
 
 #include <VelyraUtils/DevUtils/Conditions.hpp>
+
+#include <spdlog/spdlog.h>

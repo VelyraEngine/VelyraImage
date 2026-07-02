@@ -22,14 +22,14 @@ namespace Velyra::Image {
         m_Width = static_cast<U32>(width);
         m_Height = static_cast<U32>(height);
 
-        const VL_CHANNEL_FORMAT loadedFormat = getChannelFormatFromCount(channelCount);
+        const VL_CHANNEL_FORMAT loadedFormat = getChannelFormatFromCount(static_cast<U32>(channelCount));
         if (loadedFormat != desc.requestedFormat && desc.requestedFormat != VL_CHANNEL_FORMAT_MAX_VALUE) {
             SPDLOG_LOGGER_INFO(m_Logger, "Image: {} loaded with {} channels, converting to requested format {}", desc.fileName.string(), channelCount, desc.requestedFormat);
         }
         else {
             m_Format = loadedFormat;
-            m_Data.resize(m_Width * m_Height * channelCount);
-            memcpy(m_Data.data(), pData, m_Width * m_Height * channelCount * sizeof(float));
+            m_Data.resize(m_Width * m_Height * static_cast<U32>(channelCount));
+            memcpy(m_Data.data(), pData, m_Width * m_Height * static_cast<U32>(channelCount) * sizeof(float));
         }
         stbi_image_free(pData);
 
@@ -53,7 +53,7 @@ namespace Velyra::Image {
         stbi_flip_vertically_on_write(desc.flipOnWrite);
         const auto width = static_cast<I32>(m_Width);
         const auto height = static_cast<I32>(m_Height);
-        const I32 channelCount = getChannelCountFromFormat(m_Format);
+        const I32 channelCount = static_cast<I32>(getChannelCountFromFormat(m_Format));
         if (!stbi_write_hdr(desc.fileName.string().c_str(), width, height, channelCount, &m_Data[0])){
             SPDLOG_LOGGER_ERROR(m_Logger, "Image: {} failed to write", desc.fileName.string());
         }
@@ -78,8 +78,8 @@ namespace Velyra::Image {
         desc.format = m_Format;
         desc.data = nullptr;
         auto resizedImage = createUP<ImageF32>(desc);
-        if (!stbir_resize_float_linear(&m_Data[0], m_Width, m_Height, 0,
-            static_cast<float*>(resizedImage->getData()), width, height, 0,
+        if (!stbir_resize_float_linear(&m_Data[0], static_cast<int>(m_Width), static_cast<int>(m_Height), 0,
+            static_cast<float*>(resizedImage->getData()), static_cast<int>(width), static_cast<int>(height), 0,
             vlFormatToStbirFormat(m_Format))){
             SPDLOG_LOGGER_ERROR(m_Logger, "Failed to resize ImageF32 from ({}x{}) to ({}x{})", m_Width, m_Height, width, height);
         }

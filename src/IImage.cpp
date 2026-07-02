@@ -23,7 +23,7 @@ namespace Velyra::Image {
 
     }
 
-    IImage::IImage(const U32 width, const U32 height, const VL_TYPE type, const VL_CHANNEL_FORMAT format):
+    IImage::IImage(const Size width, const Size height, const VL_TYPE type, const VL_CHANNEL_FORMAT format):
     m_Width(width),
     m_Height(height),
     m_DataType(type),
