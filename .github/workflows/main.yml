@@ -15,7 +15,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y cmake git g++ ninja-build
 
       - name: Configure
-        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DVL_BUILD_TESTING=ON
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON
 
       - name: Build
         run: cmake --build build
@@ -32,7 +32,7 @@ jobs:
           submodules: recursive
 
       - name: Configure
-        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DVL_BUILD_TESTING=ON
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON
 
       - name: Build
         run: cmake --build build
