@@ -47,15 +47,16 @@ namespace Velyra::Image {
                 for (U32 c = 0; c < targetChannelCount; ++c) {
                     const Size outIndex = pixelBase + c;
 
-                    Size srcChannel = swizzle[c];
+                    const int srcChannel = swizzle[c];
                     if (srcChannel < 0) {
                         // Fill: mark 0x80
-                        mask[outIndex] = 0x80;
+                        mask[outIndex] = U8{0x80};
                     } else {
-                        Size srcByte = p * sourceChannelCount + srcChannel;
+                        // srcChannel >= 0 here, so the cast to the unsigned Size is safe
+                        const Size srcByte = p * sourceChannelCount + static_cast<Size>(srcChannel);
 
                         // Limit to lane (0–15 or 16–31)
-                        mask[outIndex] = static_cast<uint8_t>(srcByte);
+                        mask[outIndex] = static_cast<U8>(srcByte);
                     }
                 }
             }
@@ -149,7 +150,7 @@ namespace Velyra::Image {
                 if (srcChannel < 0) {
                     targetData[dOff + c] = fillValue;
                 } else {
-                    targetData[dOff + c] = sourceData[sOff + srcChannel];
+                    targetData[dOff + c] = sourceData[sOff + static_cast<Size>(srcChannel)];
                 }
             }
         }

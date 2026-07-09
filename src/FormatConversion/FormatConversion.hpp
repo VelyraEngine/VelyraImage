@@ -46,7 +46,7 @@ namespace Velyra::Image {
             for (Size j = 0; j < swizzle.size(); ++j) {
                 // Is the channel present in the source format?
                 if (swizzle[j] != -1) {
-                    targetData[i * swizzle.size() + j] = sourceData[i * sourceChannelCount + swizzle[j]];
+                    targetData[i * swizzle.size() + j] = sourceData[i * sourceChannelCount + static_cast<Size>(swizzle[j])];
                 }
                 else {
                     targetData[i * swizzle.size() + j] = fillValue;

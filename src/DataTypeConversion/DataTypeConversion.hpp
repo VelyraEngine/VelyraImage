@@ -1,6 +1,7 @@
 #pragma once
 
 #include <VelyraImage/ImageDefs.hpp>
+#include <VelyraUtils/CpuFeatures.hpp>
 #include <vector>
 
 namespace Velyra::Image::TranslateDataType {
