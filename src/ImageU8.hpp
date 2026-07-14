@@ -23,6 +23,8 @@ namespace Velyra::Image {
 
         void* getData() override;
 
+        const void* getData() const override;
+
         UP<IImage> convertToFormat(const FormatConversionDesc& desc) const override;
 
         UP<IImage> translateDataType(const TranslationDesc& desc) const override;

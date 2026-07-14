@@ -79,6 +79,10 @@ namespace Velyra::Image {
         return m_Data.data();
     }
 
+    const void* ImageF32::getData() const {
+        return m_Data.data();
+    }
+
     UP<IImage> ImageF32::convertToFormat(const FormatConversionDesc &desc) const {
         ImageF32Desc targetDesc;
         targetDesc.width = m_Width;

@@ -26,6 +26,8 @@ namespace Velyra::Image {
 
         virtual void* getData() = 0;
 
+        virtual const void* getData() const = 0;
+
         /**
          * @brief Converts the image to a different channel format. For example, RGB to RGBA or BGR to RGB.
          * @param desc Description of the format conversion, including the target channel format and how to fill missing channels if necessary.

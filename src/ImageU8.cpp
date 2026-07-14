@@ -92,6 +92,10 @@ namespace Velyra::Image {
         return m_Data.data();
     }
 
+    const void* ImageU8::getData() const {
+        return m_Data.data();
+    }
+
     UP<IImage> ImageU8::convertToFormat(const FormatConversionDesc &desc) const {
         ImageU8Desc targetDesc;
         targetDesc.width = m_Width;
