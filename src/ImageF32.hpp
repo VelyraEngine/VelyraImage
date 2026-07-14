@@ -17,9 +17,9 @@ namespace Velyra::Image {
 
         ~ImageF32() override = default;
 
-        void write(const ImageWriteDesc& desc) override;
+        void write(const ImageWriteDesc& desc) const override;
 
-        UP<IImage> resize(Size width, Size height) override;
+        UP<IImage> resize(Size width, Size height) const override;
 
         void* getData() override;
 

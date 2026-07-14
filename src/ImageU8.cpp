@@ -34,7 +34,7 @@ namespace Velyra::Image {
         SPDLOG_LOGGER_INFO(m_Logger, "Created ImageUI8 with size ({}x{}) and format {}", m_Width, m_Height, m_Format);
     }
 
-    void ImageU8::write(const ImageWriteDesc &desc) {
+    void ImageU8::write(const ImageWriteDesc &desc) const {
         stbi_flip_vertically_on_write(desc.flipOnWrite);
         const auto width = static_cast<I32>(m_Width);
         const auto height = static_cast<I32>(m_Height);
@@ -60,7 +60,7 @@ namespace Velyra::Image {
         }
     }
 
-    UP<IImage> ImageU8::resize(const Size width, const Size height) {
+    UP<IImage> ImageU8::resize(const Size width, const Size height) const {
         if (width == 0 || height == 0) {
             SPDLOG_LOGGER_WARN(m_Logger, "Image cannot be resized to ({}x{})", width, height);
 

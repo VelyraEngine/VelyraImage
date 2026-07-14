@@ -14,7 +14,7 @@ namespace Velyra::Image {
          * @brief Writes the image to disk using the specified format and settings.
          * @param desc
          */
-        virtual void write(const ImageWriteDesc& desc) = 0;
+        virtual void write(const ImageWriteDesc& desc) const = 0;
 
         /**
          * @brief Resizes the image to the specified width and height using the specified interpolation method.
@@ -22,7 +22,7 @@ namespace Velyra::Image {
          * @param height New height of the image
          * @return
          */
-        virtual UP<IImage> resize(Size width, Size height) = 0;
+        virtual UP<IImage> resize(Size width, Size height) const = 0;
 
         virtual void* getData() = 0;
 

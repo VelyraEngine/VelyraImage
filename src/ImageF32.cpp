@@ -34,7 +34,7 @@ namespace Velyra::Image {
         SPDLOG_LOGGER_INFO(m_Logger, "Created ImageF32 with size ({}x{}) and format {}", m_Width, m_Height, m_Format);
     }
 
-    void ImageF32::write(const ImageWriteDesc &desc) {
+    void ImageF32::write(const ImageWriteDesc &desc) const {
         if (desc.fileType != VL_IMAGE_HDR) {
             SPDLOG_LOGGER_WARN(m_Logger, "ImageF32 can only be written to HDR format. Image: {} will not be written", desc.fileName.string());
             return;
@@ -48,7 +48,7 @@ namespace Velyra::Image {
         }
     }
 
-    UP<IImage> ImageF32::resize(Size width, Size height) {
+    UP<IImage> ImageF32::resize(Size width, Size height) const {
         if (width == 0 || height == 0) {
             SPDLOG_LOGGER_WARN(m_Logger, "Image cannot be resized to ({}x{})", width, height);
 
