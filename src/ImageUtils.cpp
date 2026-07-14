@@ -16,4 +16,21 @@ namespace Velyra::Image {
         }
     }
 
+    VL_SIMD_MODE findBestMode(const VL_SIMD_MODE requestedMode) {
+        const Utils::CpuFeatures cpuFeatures = Utils::detectCpuFeatures();
+        if (requestedMode == VL_SIMD_BEST) {
+            // is AVX2 supported?
+            if (cpuFeatures.avx2) {
+                return VL_SIMD_AVX2;
+            }
+            // Fallback to scalar
+            return VL_SIMD_SCALAR;
+        }
+        if (requestedMode == VL_SIMD_AVX2 && !cpuFeatures.avx2) {
+            SPDLOG_WARN("AVX2 not supported on this CPU, falling back to scalar translation");
+            return VL_SIMD_SCALAR;
+        }
+        return requestedMode;
+    }
+
 }

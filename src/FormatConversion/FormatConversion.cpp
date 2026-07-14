@@ -96,47 +96,56 @@ namespace Velyra::Image {
         const Size pixelCount = sourceData.size() / srcStride;
         const U8 fillValue = getFillValue<U8>(fillMode);
 
-        // pixels processed per 256-bit vector (32 bytes)
-        const Size pixelsPerVec = 32 / dstStride;
-        if (pixelsPerVec <= 0) {
-            // defensive: divide by zero protection
-            // fallback to scalar
-            for (Size i = 0; i < pixelCount; ++i) {
-                for (U32 c = 0; c < dstStride; ++c) { targetData[i * dstStride + c] = 0; } // minimal
-            }
+        // Pixels processed per 128-bit lane.
+        //
+        // We deliberately operate on a single 128-bit lane instead of a full 256-bit
+        // vector: _mm256_shuffle_epi8 shuffles each 128-bit lane independently and
+        // cannot move bytes across the 16-byte lane boundary. Whenever the source or
+        // target stride does not tile that boundary (e.g. the 3-byte RGB/BGR formats),
+        // a symmetric 256-bit mask makes the high lane read from the wrong source
+        // offset and corrupts every second group of pixels. A per-lane 128-bit shuffle
+        // sidesteps that limitation and is correct for every stride combination.
+        //
+        // The number of pixels we can safely produce per iteration is bounded by both
+        // the 16-byte source load and the 16-byte target store.
+        const Size pixelsPerVec = std::min<Size>(16 / srcStride, 16 / dstStride);
+        if (pixelsPerVec == 0) {
+            // A single pixel does not fit in a 128-bit lane; defer entirely to the scalar path.
+            convertFormat_Scalar<U8>(sourceFormat, sourceData, targetFormat, targetData, fillMode);
             return;
         }
 
-        const __m256i shuffleMask = buildSwizzleMask_U8_AVX2(sourceFormat, targetFormat);
-        const __m256i alphaVec = _mm256_set1_epi8(static_cast<char>(fillValue));
-        const __m256i alphaBlendMask = buildAlphaBlendMask_U8_AVX2(sourceFormat, targetFormat);
+        // The low 128 bits of the AVX2 masks describe exactly one lane, which is what we need here.
+        const __m128i shuffleMask = _mm256_castsi256_si128(buildSwizzleMask_U8_AVX2(sourceFormat, targetFormat));
+        const __m128i fillVec = _mm_set1_epi8(static_cast<char>(fillValue));
+        const __m128i blendMask = _mm256_castsi256_si128(buildAlphaBlendMask_U8_AVX2(sourceFormat, targetFormat));
 
         Size i = 0;
         const Size srcByteCount = sourceData.size();
         const Size dstByteCount = targetData.size();
-        // vector loop: ensure we don't read past source buffer (need at least 32 source bytes available at read address)
+        // vector loop: a 128-bit load/store always touches 16 bytes, so both ends must be fully in range
         for (; i + pixelsPerVec <= pixelCount; i += pixelsPerVec) {
             const Size srcByteOffset = i * srcStride;
             const Size dstByteOffset = i * dstStride;
 
-            // make sure we have 32 bytes available to read from source and 32 bytes available to write to target
-            if (srcByteOffset + 32 > srcByteCount) break;  // not enough source bytes for a safe 32-byte load
-            if (dstByteOffset + 32 > dstByteCount) break;  // not enough room to store 32 bytes
+            // make sure we have 16 bytes available to read from source and 16 bytes available to write to target
+            if (srcByteOffset + 16 > srcByteCount) break;  // not enough source bytes for a safe 16-byte load
+            if (dstByteOffset + 16 > dstByteCount) break;  // not enough room to store 16 bytes
 
-            // load 32 bytes from source (UNALIGNED OK)
-            const uint8_t* srcPtr = sourceData.data() + srcByteOffset;
-            __m256i block = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(srcPtr));
+            // load 16 bytes from source (UNALIGNED OK)
+            const U8* srcPtr = sourceData.data() + srcByteOffset;
+            const __m128i block = _mm_loadu_si128(reinterpret_cast<const __m128i*>(srcPtr));
 
             // shuffle to desired layout; bytes with 0x80 in mask become zero
-            __m256i outVec = _mm256_shuffle_epi8(block, shuffleMask);
+            __m128i outVec = _mm_shuffle_epi8(block, shuffleMask);
 
-            // blend alpha fillValue only into the alpha positions
-            // _mm256_blendv_epi8 selects bytes from second operand where MSB of mask byte is set
-            outVec = _mm256_blendv_epi8(outVec, alphaVec, alphaBlendMask);
+            // blend the fill value only into the fill (e.g. alpha) positions
+            // _mm_blendv_epi8 selects bytes from second operand where MSB of mask byte is set
+            outVec = _mm_blendv_epi8(outVec, fillVec, blendMask);
 
-            // store 32 bytes into target
-            uint8_t* dstPtr = targetData.data() + dstByteOffset;
-            _mm256_storeu_si256(reinterpret_cast<__m256i*>(dstPtr), outVec);
+            // store 16 bytes into target
+            U8* dstPtr = targetData.data() + dstByteOffset;
+            _mm_storeu_si128(reinterpret_cast<__m128i*>(dstPtr), outVec);
         }
 
         // Scalar tail (handles remaining pixels)

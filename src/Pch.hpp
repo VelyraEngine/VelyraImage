@@ -10,5 +10,6 @@
 #include <immintrin.h>
 
 #include <VelyraUtils/DevUtils/Conditions.hpp>
+#include <VelyraUtils/CpuFeatures.hpp>
 
 #include <spdlog/spdlog.h>

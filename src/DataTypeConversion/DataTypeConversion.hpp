@@ -1,8 +1,8 @@
 #pragma once
 
 #include <VelyraImage/ImageDefs.hpp>
-#include <VelyraUtils/CpuFeatures.hpp>
 #include <vector>
+#include "../ImageUtils.hpp"
 
 namespace Velyra::Image::TranslateDataType {
 
@@ -33,23 +33,15 @@ namespace Velyra::Image::TranslateDataType {
     void translateDataType_AVX2(const std::vector<float>& source, std::vector<U8>& destination);
 
     template<typename SrcType, typename DstType>
-    void translateDataType(const std::vector<SrcType>& source,
-                          std::vector<DstType>& destination,
-                          const TranslationDesc& desc) {
-        
+    void translateDataType(const std::vector<SrcType>& source, std::vector<DstType>& destination, const TranslationDesc& desc) {
         if constexpr (std::is_same_v<SrcType, DstType>) {
-            destination = source;
+            destination = source; // Just copy
             return;
         }
-        const Utils::CpuFeatures cpuFeatures = Utils::detectCpuFeatures();
-        switch (desc.simdMode) {
+        switch (findBestMode(desc.simdMode)) {
             case VL_SIMD_AVX2: {
-                if (cpuFeatures.avx2) {
-                    translateDataType_AVX2(source, destination);
-                    return;
-                }
-                SPDLOG_WARN("AVX2 not supported on this CPU, falling back to scalar translation");
-                break;
+                translateDataType_AVX2(source, destination);
+                return;
             }
             default: {
                 break;

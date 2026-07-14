@@ -6,4 +6,6 @@ namespace Velyra::Image {
 
     stbir_pixel_layout vlFormatToStbirFormat(VL_CHANNEL_FORMAT format);
 
+    VL_SIMD_MODE findBestMode(VL_SIMD_MODE requestedMode);
+
 }

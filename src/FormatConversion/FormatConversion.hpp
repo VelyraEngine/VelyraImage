@@ -3,8 +3,9 @@
 #include <span>
 
 #include <VelyraImage/ImageDefs.hpp>
-#include <VelyraUtils/CpuFeatures.hpp>
 #include <VelyraUtils/TypeTraits.hpp>
+
+#include "../ImageUtils.hpp"
 
 namespace Velyra::Image {
 
@@ -60,15 +61,19 @@ namespace Velyra::Image {
     template<typename T>
     void convertFormat(const VL_CHANNEL_FORMAT sourceFormat, std::span<const T> sourceData,
         std::vector<T>& targetData, const FormatConversionDesc& desc) {
-
-        // Dispatch based on CPU features and data type
-        static Utils::CpuFeatures cpuFeatures = Utils::detectCpuFeatures();
-        if constexpr (std::is_same_v<T, U8>) {
-            if (cpuFeatures.avx2 && desc.simdMode == VL_SIMD_AVX2) {
-                convertFormat_U8_AVX2(sourceFormat, sourceData, desc.targetFormat, targetData, desc.fillMode);
-                return;
+        switch (findBestMode(desc.simdMode)) {
+            case VL_SIMD_AVX2: {
+                if constexpr (std::is_same_v<T, U8>) {
+                    convertFormat_U8_AVX2(sourceFormat, sourceData, desc.targetFormat, targetData, desc.fillMode);
+                    return;
+                }
+                break;
+            }
+            default: {
+                break;
             }
         }
+
         convertFormat_Scalar<T>(sourceFormat, sourceData, desc.targetFormat, targetData, desc.fillMode);
     }
 }
