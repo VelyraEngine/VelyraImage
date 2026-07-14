@@ -87,7 +87,7 @@ namespace Velyra::Image {
         return _mm256_loadu_si256(reinterpret_cast<const __m256i*>(mask.data()));
     }
 
-    void convertFormat_U8_AVX2(const VL_CHANNEL_FORMAT sourceFormat, const std::vector<U8> &sourceData,
+    void convertFormat_U8_AVX2(const VL_CHANNEL_FORMAT sourceFormat, const std::span<const U8> sourceData,
         const VL_CHANNEL_FORMAT targetFormat, std::vector<U8> &targetData, const VL_FORMAT_CONVERSION_FILL fillMode) {
 
         const U32 srcStride = getChannelCountFromFormat(sourceFormat);

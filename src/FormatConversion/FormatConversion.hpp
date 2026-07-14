@@ -1,5 +1,7 @@
 #pragma once
 
+#include <span>
+
 #include <VelyraImage/ImageDefs.hpp>
 #include <VelyraUtils/CpuFeatures.hpp>
 #include <VelyraUtils/TypeTraits.hpp>
@@ -8,7 +10,7 @@ namespace Velyra::Image {
 
     std::vector<int> defineSwizzle(VL_CHANNEL_FORMAT sourceFormat, VL_CHANNEL_FORMAT targetFormat);
 
-    void convertFormat_U8_AVX2(VL_CHANNEL_FORMAT sourceFormat, const std::vector<U8>& sourceData,
+    void convertFormat_U8_AVX2(VL_CHANNEL_FORMAT sourceFormat, std::span<const U8> sourceData,
         VL_CHANNEL_FORMAT targetFormat, std::vector<U8>& targetData, VL_FORMAT_CONVERSION_FILL fillMode);
 
     template<typename T>
@@ -34,7 +36,7 @@ namespace Velyra::Image {
     }
 
     template<typename T>
-    void convertFormat_Scalar(const VL_CHANNEL_FORMAT sourceFormat, const std::vector<T>& sourceData,
+    void convertFormat_Scalar(const VL_CHANNEL_FORMAT sourceFormat, std::span<const T> sourceData,
         const VL_CHANNEL_FORMAT targetFormat, std::vector<T>& targetData, const VL_FORMAT_CONVERSION_FILL fillMode) {
 
         const std::vector<int> swizzle = defineSwizzle(sourceFormat, targetFormat);
@@ -56,7 +58,7 @@ namespace Velyra::Image {
     }
 
     template<typename T>
-    void convertFormat(const VL_CHANNEL_FORMAT sourceFormat, const std::vector<T>& sourceData,
+    void convertFormat(const VL_CHANNEL_FORMAT sourceFormat, std::span<const T> sourceData,
         std::vector<T>& targetData, const FormatConversionDesc& desc) {
 
         // Dispatch based on CPU features and data type

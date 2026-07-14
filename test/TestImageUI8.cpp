@@ -38,6 +38,34 @@ TEST_F(TestImageUI8, ReadImageFromFile) {
     checkRedImage(image);
 }
 
+TEST_F(TestImageUI8, ReadImageFromFileOtherFormat) {
+    /*
+     * Load the same 100x100 red image in UI8 RGB format but request a different channel format (e.g., BGRA) and verify its properties and pixel data.
+     */
+    const fs::path testImagePath = fs::current_path() / "Resources" / "Red-100x100-UI8-RGB.png";
+    ImageLoadDesc desc;
+    desc.fileName = testImagePath;
+    desc.flipOnLoad = true;
+    desc.requestedFormat = VL_CHANNEL_BGRA; // Request a different format
+    desc.fillMode = VL_FILL_MAX; // Fill missing channels with max value (255)
+    ImageU8 image(desc);
+    EXPECT_EQ(image.getWidth(), 100);
+    EXPECT_EQ(image.getHeight(), 100);
+    EXPECT_EQ(image.getChannelFormat(), desc.requestedFormat);
+    EXPECT_EQ(image.getDataType(), VL_UINT8);
+    EXPECT_EQ(image.getPixelCount(), 100 * 100);
+    EXPECT_EQ(image.getCount(), 100 * 100 * 4); // BGRA has 4 channels
+    EXPECT_EQ(image.getSize(), 100 * 100 * 4 * sizeof(U8));
+
+    auto pixelPtr = static_cast<U8*>(image.getData());
+    for (Size i = 0; i < image.getPixelCount(); i += 4) {
+        EXPECT_EQ(pixelPtr[i], 0);       // B
+        EXPECT_EQ(pixelPtr[i + 1], 0);   // G
+        EXPECT_EQ(pixelPtr[i + 2], 255); // R
+        EXPECT_EQ(pixelPtr[i + 3], 255); // A (default fill value)
+    }
+}
+
 TEST_F(TestImageUI8, CreateImageFromData) {
     /*
      * Create a 50x50 red image in UI8 RGB format from raw data and verify its properties and pixel data.

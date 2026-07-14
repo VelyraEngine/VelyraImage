@@ -57,6 +57,7 @@ namespace Velyra::Image {
         fs::path fileName;
         bool flipOnLoad         = true;
         VL_CHANNEL_FORMAT requestedFormat = VL_CHANNEL_FORMAT_MAX_VALUE; // If UNKNOWN, load all channels available in the image
+        VL_FORMAT_CONVERSION_FILL fillMode = VL_FILL_MAX; // If the requestedFormat has more channels than the image, fill the new channels with this value
     };
 
     struct VL_API ImageWriteDesc {

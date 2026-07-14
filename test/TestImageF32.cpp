@@ -38,6 +38,34 @@ TEST_F(TestImageF32, ReadImageFromFile) {
     checkRedImage(image);
 }
 
+TEST_F(TestImageF32, ReadImageFromFileOtherFormat) {
+    /*
+     * Load the same 100x100 red image in F32 RGB format but request a different channel format (e.g., BGRA) and verify its properties and pixel data.
+     */
+    const fs::path testImagePath = fs::current_path() / "Resources" / "Red-100x100-F32-RGB.hdr";
+    ImageLoadDesc desc;
+    desc.fileName = testImagePath;
+    desc.flipOnLoad = true;
+    desc.requestedFormat = VL_CHANNEL_BGRA; // Request a different format
+    desc.fillMode = VL_FILL_MAX; // Fill missing channels with max value (1.0f)
+    ImageF32 image(desc);
+    EXPECT_EQ(image.getWidth(), 100);
+    EXPECT_EQ(image.getHeight(), 100);
+    EXPECT_EQ(image.getChannelFormat(), desc.requestedFormat);
+    EXPECT_EQ(image.getDataType(), VL_FLOAT32);
+    EXPECT_EQ(image.getPixelCount(), 100 * 100);
+    EXPECT_EQ(image.getCount(), 100 * 100 * 4); // BGRA has 4 channels
+    EXPECT_EQ(image.getSize(), 100 * 100 * 4 * sizeof(float));
+
+    auto pixelPtr = static_cast<float*>(image.getData());
+    for (Size i = 0; i < image.getPixelCount(); i += 4) {
+        EXPECT_NEAR(pixelPtr[i + 2], 1.0f, 0.01f);  // R
+        EXPECT_FLOAT_EQ(pixelPtr[i + 1], 0.0f);     // G
+        EXPECT_FLOAT_EQ(pixelPtr[i], 0.0f);         // B
+        EXPECT_FLOAT_EQ(pixelPtr[i + 3], 1.0f);     // A (filled with max value)
+    }
+}
+
 TEST_F(TestImageF32, CreateImageFromData) {
     /*
      * Create a 50x50 red image in F32 RGB format from raw data and verify its properties and pixel data.

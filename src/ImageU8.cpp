@@ -25,6 +25,16 @@ namespace Velyra::Image {
         const VL_CHANNEL_FORMAT loadedFormat = getChannelFormatFromCount(static_cast<U32>(channelCount));
         if (loadedFormat != desc.requestedFormat && desc.requestedFormat != VL_CHANNEL_FORMAT_MAX_VALUE) {
             SPDLOG_LOGGER_INFO(m_Logger, "Image: {} loaded with {} channels, converting to requested format {}", desc.fileName.string(), channelCount, desc.requestedFormat);
+            m_Format = desc.requestedFormat;
+
+            const std::span<const U8> sourceView(pData, m_Width * m_Height * static_cast<Size>(channelCount));
+
+            m_Data.resize(m_Width * m_Height * getChannelCountFromFormat(desc.requestedFormat));
+
+            FormatConversionDesc conversionDesc;
+            conversionDesc.targetFormat = desc.requestedFormat;
+            conversionDesc.fillMode = desc.fillMode;
+            convertFormat<U8>(loadedFormat, sourceView, m_Data, conversionDesc);
         }
         else {
             m_Format = loadedFormat;
