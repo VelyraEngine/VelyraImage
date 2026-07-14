@@ -31,7 +31,6 @@ namespace Velyra::Image {
         friend class ImageF32; // Allow ImageF32 to access m_Data
         
         std::vector<U8> m_Data;
-        Utils::LogPtr m_Logger = Utils::getLogger(LOGGER_UI8);
     };
 
 }

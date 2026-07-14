@@ -2,6 +2,7 @@
 
 #include <VelyraImage/ImageDefs.hpp>
 #include <VelyraUtils/Types/SymbolicTypes.hpp>
+#include <VelyraUtils/LoggingFwd.hpp>
 
 namespace Velyra::Image {
 
@@ -66,15 +67,20 @@ namespace Velyra::Image {
         Size getSize() const;
 
     protected:
-        explicit IImage(VL_TYPE type);
+        IImage(VL_TYPE type, const char* loggerName);
 
-        IImage(Size width, Size height, VL_TYPE type, VL_CHANNEL_FORMAT format);
+        IImage(Size width, Size height, VL_TYPE type, VL_CHANNEL_FORMAT format, const char* loggerName);
+
+        template<typename T>
+        void setData(const ImageLoadDesc& desc, const T* loadedData, I32 loadedWidth, I32 loadedHeight, I32 loadedChannels,
+            std::vector<T>& destinationData);
 
     protected:
         Size m_Width = 0;
         Size m_Height = 0;
         const VL_TYPE m_DataType = VL_TYPE_NONE;
         VL_CHANNEL_FORMAT m_Format = VL_CHANNEL_FORMAT_MAX_VALUE;
+        Utils::LogPtr m_Logger;
 
     };
 

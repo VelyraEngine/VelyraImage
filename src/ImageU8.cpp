@@ -2,14 +2,13 @@
 
 #include "ImageU8.hpp"
 #include "ImageUtils.hpp"
-#include "FormatConversion/FormatConversion.hpp"
 #include "DataTypeConversion/DataTypeConversion.hpp"
 #include "ImageF32.hpp"
 
 namespace Velyra::Image {
 
     ImageU8::ImageU8(const ImageLoadDesc &desc):
-    IImage(VL_UINT8){
+    IImage(VL_UINT8, LOGGER_UI8){
         stbi_set_flip_vertically_on_load(desc.flipOnLoad);
         I32 channelCount = 0;
         I32 width = 0;
@@ -19,35 +18,15 @@ namespace Velyra::Image {
             SPDLOG_LOGGER_ERROR(m_Logger, "Image: {} failed to load", desc.fileName.string());
             return;
         }
-        m_Width = static_cast<U32>(width);
-        m_Height = static_cast<U32>(height);
+        SPDLOG_LOGGER_INFO(m_Logger, "Loaded ImageU8: {} with size ({}x{}) and format {}", desc.fileName.string(), m_Width, m_Height, m_Format);
 
-        const VL_CHANNEL_FORMAT loadedFormat = getChannelFormatFromCount(static_cast<U32>(channelCount));
-        if (loadedFormat != desc.requestedFormat && desc.requestedFormat != VL_CHANNEL_FORMAT_MAX_VALUE) {
-            SPDLOG_LOGGER_INFO(m_Logger, "Image: {} loaded with {} channels, converting to requested format {}", desc.fileName.string(), channelCount, desc.requestedFormat);
-            m_Format = desc.requestedFormat;
+        setData<U8>(desc, pData, width, height, channelCount, m_Data);
 
-            const std::span<const U8> sourceView(pData, m_Width * m_Height * static_cast<Size>(channelCount));
-
-            m_Data.resize(m_Width * m_Height * getChannelCountFromFormat(desc.requestedFormat));
-
-            FormatConversionDesc conversionDesc;
-            conversionDesc.targetFormat = desc.requestedFormat;
-            conversionDesc.fillMode = desc.fillMode;
-            convertFormat<U8>(loadedFormat, sourceView, m_Data, conversionDesc);
-        }
-        else {
-            m_Format = loadedFormat;
-            m_Data.resize(m_Width * m_Height * static_cast<U32>(channelCount));
-            memcpy(m_Data.data(), pData, m_Width * m_Height * static_cast<U32>(channelCount));
-        }
         stbi_image_free(pData);
-
-        SPDLOG_LOGGER_INFO(m_Logger, "Loaded ImageUI8: {} with size ({}x{}) and format {}", desc.fileName.string(), m_Width, m_Height, m_Format);
     }
 
     ImageU8::ImageU8(const ImageU8Desc &desc):
-    IImage(desc.width, desc.height, VL_UINT8, desc.format),
+    IImage(desc.width, desc.height, VL_UINT8, desc.format, LOGGER_UI8),
     m_Data(desc.width * desc.height * getChannelCountFromFormat(desc.format), 255) {
         if (desc.data != nullptr) {
             memcpy(m_Data.data(), desc.data, desc.width * desc.height * getChannelCountFromFormat(desc.format));
