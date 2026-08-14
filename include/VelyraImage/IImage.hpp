@@ -2,7 +2,7 @@
 
 #include <VelyraImage/ImageDefs.hpp>
 #include <VelyraUtils/Types/SymbolicTypes.hpp>
-#include <VelyraUtils/LoggingFwd.hpp>
+#include <VelyraUtils/Logging/LoggingFwd.hpp>
 
 namespace Velyra::Image {
 

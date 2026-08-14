@@ -4,6 +4,7 @@
 #include "ImageUtils.hpp"
 #include "DataTypeConversion/DataTypeConversion.hpp"
 #include "ImageU8.hpp"
+#include "FormatConversion/FormatConversion.hpp"
 
 namespace Velyra::Image {
 

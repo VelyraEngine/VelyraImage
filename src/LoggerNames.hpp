@@ -1,7 +1,5 @@
 #pragma once
 
-#include <VelyraUtils/Logging.hpp>
-
 namespace Velyra::Image {
 
     constexpr auto LOGGER_BASE = "VL-IMG-BAS";
